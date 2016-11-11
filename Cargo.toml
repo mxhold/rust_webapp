@@ -1,0 +1,9 @@
+[package]
+name = "pastebin_rs"
+version = "0.1.0"
+authors = ["maholder <code@getbraintree.com>"]
+
+[dependencies]
+hyper = "0.9.10"
+regex = "0.1"
+url = "1.2.2"
