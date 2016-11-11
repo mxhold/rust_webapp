@@ -26,12 +26,39 @@ fn hello(req: Request, res: Response) {
     res.send(response_body.as_bytes()).unwrap();
 }
 
+struct App {
+    hyper_server: hyper::server::Server,
+}
+
+impl App {
+    fn new(listen_addr: &str) -> Result<App, hyper::Error> {
+        match Server::http(listen_addr) {
+            Ok(server) => Ok(App { hyper_server: server }),
+            Err(err) => Err(err),
+        }
+    }
+
+    fn handle<H: hyper::server::Handler + 'static>(self, handler: H) ->
+        hyper::Result<hyper::server::Listening> {
+        self.hyper_server.handle(handler)
+    }
+}
+
 fn main() {
-    Server::http("0.0.0.0:5000").unwrap().handle(hello).unwrap();
+    let app = App::new("0.0.0.0:5000").unwrap();
+    app.handle(hello).unwrap();
+    // TODO:
+    // app.register_route("(.*)", |req, res, name| {
+    //     let response_body = match name {
+    //         Some(name) => "Hello, ".to_string() + &name + "!",
+    //         None => "Hello, World!",
+    //     }
+    //     res.send(response_body.as_bytes()).unwrap();
+    // });
 }
 
 #[test]
-fn test() {
+fn integration_test() {
     std::thread::spawn(move || {
         main();
     });
