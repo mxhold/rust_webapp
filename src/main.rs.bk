@@ -14,18 +14,14 @@ use std::collections::HashMap;
 
 struct App {
     hyper_server: hyper::server::Server,
-    routes: HashMap<String, Box<Fn(Request, Response, Option<String>)>>,
+    // routes: HashMap<String, Fn(Request, Response, Option<String>)>,
 }
 
 impl App {
     fn new(listen_addr: &str) -> Result<App, hyper::Error> {
-        let routes: HashMap<String, Box<Fn(Request, Response, Option<String>)>> = HashMap::new();
         match Server::http(listen_addr) {
-            Ok(server) => Ok(App {
-                    hyper_server: server,
-                    routes: routes,
-                }),
-            // Ok(server) => Ok(App { hyper_server: server }),
+            // Ok(server) => Ok(App { hyper_server: server, routes: HashMap::new() }),
+            Ok(server) => Ok(App { hyper_server: server }),
             Err(err) => Err(err),
         }
     }
